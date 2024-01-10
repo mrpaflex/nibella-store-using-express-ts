@@ -1,14 +1,17 @@
-import { Request, Response, Application } from 'express';
 import express = require('express');
 import * as dotenv from "dotenv";
+import { connectDB } from './configdb/db';
+import {main_router} from './router/main.router';
 
 dotenv.config()
+const app= express();
 
-const app: Application= express();
+connectDB();
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('This is just the beginning');
-});
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
+
+app.use(main_router)
 
 const port = process.env.PORT || 3000;
 

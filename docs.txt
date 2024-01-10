@@ -1,0 +1,4 @@
+1. initialize the project --- npm init -y
+2. install expressjs--- npm i express
+3. initialize tsc--- tsc init,
+4 install all dependencies used check (package.json);
