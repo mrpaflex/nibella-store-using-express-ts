@@ -18,7 +18,7 @@ export const PassportStrategy = (passport: any)=> {
          return done(null, false, {message: "password do not matched"})
          }
          //return the user that is loggd in
-         return done(user)
+         return done(null, user)
         } catch (error) {
           return done(error);
         }
@@ -27,14 +27,14 @@ export const PassportStrategy = (passport: any)=> {
 
 
     ///use the serialize and deserialized function here
-    passport.serializeUser((user: any, done: any): Promise<any>=>{
-      return done(null, user.id)
+    passport.serializeUser((user: any, done: any)=>{
+     done(null, user.id)
     });
 
     passport.deserializeUser(async (id:any, done: any): Promise<any>=>{
       try {
         const user = await User.findById(id);
-        return done(null, user)
+        done(null, user)
       } catch (error) {
         done(error)
       }

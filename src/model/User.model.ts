@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { GenderType, UserType } from './enum/user.enum';
+import { GenderType, UserType } from '../enum/user.enum';
 
 const UserSchema = new mongoose.Schema({
     fullName:{
@@ -57,6 +57,6 @@ const UserSchema = new mongoose.Schema({
 })
 
 
-export  const User = mongoose.model('User', UserSchema);
+export  const User = mongoose.model('user', UserSchema);
 
 //export default User;
