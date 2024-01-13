@@ -1,6 +1,7 @@
 export enum UserType{
     "ADMIN"= "admin",
-    "CUSTOMER"= "customer"
+    "CUSTOMER"= "customer",
+    "Moderator"= "moderator",
 };
 
 export enum GenderType{

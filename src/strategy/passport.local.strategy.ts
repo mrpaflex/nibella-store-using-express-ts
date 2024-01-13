@@ -1,8 +1,10 @@
 import { Strategy as LocalStrategy } from 'passport-local';
-import { User } from '../model/User.model';                              
+import { IUser, User } from '../model/User.model';                              
 import { comparedPassword } from '../common/hashedPassword';
 
-export const PassportStrategy = (passport: any)=> {
+
+
+export const PassportStrategy = async (passport: any)=> {
   
     passport.use(
       new LocalStrategy(
@@ -26,17 +28,30 @@ export const PassportStrategy = (passport: any)=> {
     );
 
 
-    ///use the serialize and deserialized function here
-    passport.serializeUser((user: any, done: any)=>{
-     done(null, user.id)
+    passport.serializeUser((user: IUser, done: any) => {
+      done(null, user._id);
     });
+    
 
-    passport.deserializeUser(async (id:any, done: any): Promise<any>=>{
+    passport.deserializeUser(async (_id: string, done: any) => {
       try {
-        const user = await User.findById(id);
-        done(null, user)
+        const user = await User.findById(_id);
+        return done(null, user);
       } catch (error) {
-        done(error)
+        return done(error);
       }
-    })
+    });
+    
   };
+
+
+  
+
+//   export {}
+// declare global {
+//   namespace Express {
+//     interface Request {
+//       user?: User | undefined;
+//     }
+//   }
+// }

@@ -5,6 +5,8 @@ import { hashedPassword } from "../common/hashedPassword";
 import passport from "passport";
 
 
+
+
 export const SignUp = async (req: Request, res: Response) => {
     const errors = validationResult(req);
   
@@ -43,7 +45,11 @@ export const SignUp = async (req: Request, res: Response) => {
         address: address,
       });
   
-      res.json({ createUser });
+      return createUser.save();
+
+      // res.json({ 
+      //   createUser
+      //  });
     } catch (error) {
       return res.status(400).json({ msg: 'Server error while signing up', error });
     }
@@ -51,7 +57,7 @@ export const SignUp = async (req: Request, res: Response) => {
 
 export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
    
-    passport.authenticate('local', async (err: any, user: string, info: any) => {
+    passport.authenticate('local', async (err: any, user: Express.User) => {
       try {
         if (err) {
           return res.status(400).json({ msg: err });
@@ -59,13 +65,14 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
         if (!user) {
           return res.status(400).json({ msg: 'User does not exist' });
         }
-        req.login(user, (err) => {
-          
+        req.logIn(user, (err) => {
+          // req.user = user;
           if (err) {
-            return next(err)
+            next(err)
          //  return res.status(400).json({msg: err}) 
           }
-         // return user;
+          //return req.user;
+         // res.status(200).json({msg: user})
         return res.json({ msg: 'Login successful', user });
         });
       } catch (error) {

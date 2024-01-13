@@ -16,15 +16,19 @@ PassportStrategy(passport)
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-console.log(process.env.TOKEN_SECRET)
+const token = process.env.SECRET_TOKEN;
+
+if (!token) {
+  throw new Error('SECRET_TOKEN is not defined in the environment variables');
+}
 
 app.use(session({
-    secret: "thisis not makeing sense for me i would have love to use .env",
+    secret: token,
     resave: false,
     saveUninitialized: false,
     cookie: { 
       secure: false,
-      maxAge: 1 * 60 * 60 * 1000
+      maxAge: 10* 60 * 1000//10 minnute
      },
     store: MongoStore.create({mongoUrl: process.env.MONGO_URI}),
   }));

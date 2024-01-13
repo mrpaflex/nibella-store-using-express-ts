@@ -1,5 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { GenderType, UserType } from '../enum/user.enum';
+
+export interface IUser extends Document {
+    _id: mongoose.Types.ObjectId;
+    fullName: string;
+    email: string;
+    userName: string;
+    telephone: string;
+    password: string;
+    userRole: string[];
+    gender: string;
+    suspended: boolean;
+    address: string | null;
+    date: Date;
+  }
 
 const UserSchema = new mongoose.Schema({
     fullName:{
@@ -26,10 +40,11 @@ const UserSchema = new mongoose.Schema({
         required: true,
         type: String
     },
-    userType:{
-        type: String,
+    userRole:{
+        type: [String],
+        required: true,
         enum: Object.values(UserType),
-        default: UserType.CUSTOMER,
+        default: [UserType.CUSTOMER],
     },
 
     gender:{
@@ -57,6 +72,6 @@ const UserSchema = new mongoose.Schema({
 })
 
 
-export  const User = mongoose.model('user', UserSchema);
+  const User = mongoose.model<IUser>('User', UserSchema);
 
-//export default User;
+  export { User };
