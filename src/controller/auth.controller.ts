@@ -45,11 +45,11 @@ export const SignUp = async (req: Request, res: Response) => {
         address: address,
       });
   
-      return createUser.save();
+    
 
-      // res.json({ 
-      //   createUser
-      //  });
+      return res.json({ 
+        Respone: `you have successfully sign up ${createUser.fullName}`
+       });
     } catch (error) {
       return res.status(400).json({ msg: 'Server error while signing up', error });
     }
