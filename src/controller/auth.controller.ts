@@ -73,7 +73,7 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
           }
           //return req.user;
          // res.status(200).json({msg: user})
-        return res.json({ msg: 'Login successful', user });
+        return res.json({ msg: 'Login successful' });
         });
       } catch (error) {
         next(error);

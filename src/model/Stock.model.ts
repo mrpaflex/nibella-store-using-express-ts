@@ -12,7 +12,7 @@ const StockSchema = new mongoose.Schema({
     },
 
     size:{
-        type: Number,
+        type: String,
         required: true
     },
  
@@ -25,6 +25,14 @@ const StockSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
         default: null
+    },
+    cloudinary_id: {
+        type: String,
+        required: true
+    },
+    images:{
+         type: [Object],
+        required: true,
     },
 
     outofstock:{
