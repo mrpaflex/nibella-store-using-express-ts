@@ -1,0 +1,1 @@
+export const ExludeField= ['password', 'userRole', 'suspended', 'date'];

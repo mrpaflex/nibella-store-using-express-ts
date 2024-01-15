@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import {User} from '../model/User.model';
+import {IUser, User} from '../model/User.model';
 import { validationResult } from 'express-validator';
 import { hashedPassword } from "../common/hashedPassword";
 import passport from "passport";
+import { IUserUpdate } from "../model/dto/updateUser";
 
-
+// import { ExludeField } from "../model/exclude/excludefield.user";
+// import { UpdateUserInfo } from "../model/dto/updateUser";
 
 
 export const SignUp = async (req: Request, res: Response) => {
@@ -45,8 +47,6 @@ export const SignUp = async (req: Request, res: Response) => {
         address: address,
       });
   
-    
-
       return res.json({ 
         Respone: `you have successfully sign up ${createUser.fullName}`
        });
@@ -80,4 +80,94 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
       }
     })(req, res, next);
   };
+
+  export const SuspendUser = async (req: Request, res: Response) => {
+    try {
+      const paramid = req.params.id;
+      const user = await User.findOne({ _id: paramid });
   
+      if (!user) {
+        return res.status(404).json({ msg: `User with id ${paramid} not found` });
+      }
+  
+      if (user.suspended === true) {
+        return res.status(402).json({ msg: `User ${user.fullName} has already been suspended` });
+      }
+  
+      await User.findOneAndUpdate(
+        { _id: paramid },
+        { $set: { suspended: true } },
+        { new: true, runValidators: true }
+      ).lean();
+  
+      return res.json({ msg: `User with id ${paramid} suspended successfully`});
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+  export const UnSuspendUser = async (req: Request, res: Response) => {
+    try {
+      const paramid = req.params.id;
+      const user = await User.findOne({ _id: paramid });
+  
+      if (!user) {
+        return res.status(404).json({ msg: `User with id ${paramid} not found` });
+      }
+  
+      if (user.suspended === false) {
+        return res.status(402).json({ msg: `User ${user.fullName} was not suspended` });
+      }
+  
+      await User.findOneAndUpdate(
+        { _id: paramid },
+        { $set: { suspended: false } },
+        { new: true, runValidators: true }
+      ).lean();
+  
+      return res.json({ msg: `User with id ${paramid} is not longer suspended`});
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+export const UpdateUser = async (req: Request, res: Response) => {
+  try {
+    const paramid = req.params.id;
+    
+    const UpdateUserInfo: IUserUpdate = req.body;
+
+    const requiredFields = Object.keys(UpdateUserInfo);
+
+    if (requiredFields.length === 0) {
+      return res.status(405).json({ msg: "At least one field is required" });
+    }
+
+    const user = await User.findById(paramid);
+
+    if (!user) {
+      return res.status(404).json({ msg: `User with id ${paramid} not found` });
+    }
+
+    // if (user !== req.user) {
+    //   return res.status(403).json({ msg: "You can only update your profile" });
+    // }
+
+    if (user._id.toString() !== (req.user as IUser)._id.toString()) {
+
+      //console.log(user._id.toString(), (req.user as IUser)._id.toString() )
+
+      return res.status(403).json({ msg: "You can only update your profile" });
+    }
+
+    const updatedProfile = await User.findByIdAndUpdate(
+      paramid,
+      UpdateUserInfo,
+      { new: true, runValidators: true }
+    ).lean();
+
+    return res.json({ msg: `Profile updated successfully` });
+  } catch (error) {
+    return res.status(500).json({ msg: 'Internal Server Error', error });
+  }
+};

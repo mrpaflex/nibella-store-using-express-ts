@@ -21,6 +21,11 @@ const StockSchema = new mongoose.Schema({
         required: true
     },
  
+    images:{
+        type: [Object],
+        required: true,
+    },
+    
     userid:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
@@ -30,10 +35,7 @@ const StockSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    images:{
-         type: [Object],
-        required: true,
-    },
+    
 
     outofstock:{
         type: Boolean,

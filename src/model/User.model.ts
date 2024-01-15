@@ -40,12 +40,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         type: String
     },
-    userRole:{
-        type: [String],
-        required: true,
-        enum: Object.values(UserType),
-        default: [UserType.CUSTOMER],
-    },
+  
 
     gender:{
         type: String,
@@ -54,14 +49,21 @@ const UserSchema = new mongoose.Schema({
   
     },
 
+    address:{
+        type: String,
+        default: null
+    },
+
     suspended:{
         type: Boolean,
         default: false,
     },
 
-    address:{
-        type: String,
-        default: null
+    userRole:{
+        type: [String],
+        required: true,
+        enum: Object.values(UserType),
+        default: [UserType.CUSTOMER],
     },
     date:{
         default: Date.now,
