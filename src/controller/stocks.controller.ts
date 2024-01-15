@@ -1,6 +1,7 @@
 import {Request, Response } from "express";
-import {Stock} from '../model/Stock.model';
+import {IStock, Stock} from '../model/Stock.model';
 import {cloudinary} from '../common/cloudinary/cloudinary.config';
+import { AddToCartStock } from "../model/interface/addtocart.stock";
 
 export const UploadStock = async (req: Request, res: Response)=>{
   
@@ -75,5 +76,41 @@ export const DeleteStockById = async (req: Request, res: Response) => {
     res.json({ msg: 'Stock deleted successfully' });
   } catch (error) {
     res.status(500).json({ msg: 'Internal Server Error', error});
+  }
+};
+
+export const AddToCart = async (req: Request, res: Response) => {
+  
+  const { id, quantity, size, color }: AddToCartStock = req.body;
+
+  
+  const requiredFields = [ 'id', 'size', 'color'];
+  for (const field of requiredFields) {
+    if (!req.body[field]) {
+      return res.status(400).json({ msg: `${field} must be selected` });
+    }
+  }
+  
+  let cart: { id: string; quantity: any; size: any; color: any}[] = [];
+  try {
+   // const stockId = (req.user as IStock)._id.toString()
+    const stocks = await Stock.find({
+      _id: { $in: id },
+      outofstock: false,
+    });
+
+    if (!stocks || stocks.length === 0) {
+      return res.status(404).json({ msg: "Product IDs not found or out of stock" });
+    }
+    stocks.forEach((stock) => {
+      cart.push({ id: stock._id.toString(), quantity: quantity || 1, size: size, color:color });
+    });
+    if (!cart || cart.length === 0) {
+      return res.status(405).json({ msg: "Your cart is empty" });
+    }
+
+    res.status(200).json({ message: 'Products added to cart', cart });
+  } catch (error) {
+    res.status(500).json({ msg: "Internal server error", error});
   }
 };

@@ -1,4 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+
+
+export interface IStock extends Document {
+    _id: mongoose.Types.ObjectId;
+    name: string,
+    price: number,
+    size: string,
+    color: string,
+    images: [object],
+    userid: mongoose.Schema.Types.ObjectId,
+    cloudinary_id: Boolean,
+    outofstock: Boolean,
+    deleted: Boolean
+    date: Date
+  }
+
 
 const StockSchema = new mongoose.Schema({
     name:{

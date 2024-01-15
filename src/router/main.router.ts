@@ -1,11 +1,11 @@
 import  express from "express";
 export const main_router = express.Router();
 import {homePage} from '../controller/home.controller'
-import {LogInUser, SignUp, SuspendUser, UnSuspendUser, UpdateUser} from '../controller/auth.controller'
- import { GetAllClothes, UploadStock, GetOneStockById, DeleteStockById } from "../controller/stocks.controller";
- import { ensureAuth } from "../middleware/passport.middleware";
- import { restrict } from "../middleware/user.role";
- import { UserType } from "../enum/user.enum";
+import {LogInUser, SignUp, SuspendUser, UnSuspendUser, EditProfile} from '../controller/auth.controller'
+import {GetAllClothes, UploadStock, GetOneStockById, DeleteStockById, AddToCart } from "../controller/stocks.controller";
+import { ensureAuth } from "../middleware/passport.middleware";
+import { restrict } from "../middleware/user.role";
+import { UserType } from "../enum/user.enum";
 import { multerUpload } from "../common/multer/multer.upload";
 
 main_router.get('/', homePage);
@@ -26,4 +26,6 @@ main_router.put('/user/suspend/:id', ensureAuth, restrict([UserType.ADMIN, UserT
 
 main_router.put('/user/unSuspend/:id', ensureAuth, restrict([UserType.ADMIN, UserType.MODERATOR]), UnSuspendUser);
 
-main_router.put('/user/update/:id', ensureAuth, UpdateUser);
+main_router.put('/user/editProfile/:id', ensureAuth, EditProfile);
+
+main_router.post('/user/addToCart', AddToCart);

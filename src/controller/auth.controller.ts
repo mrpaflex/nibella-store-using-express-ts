@@ -3,7 +3,7 @@ import {IUser, User} from '../model/User.model';
 import { validationResult } from 'express-validator';
 import { hashedPassword } from "../common/hashedPassword";
 import passport from "passport";
-import { IUserUpdate } from "../model/dto/updateUser";
+import { IUserUpdate } from "../model/interface/updateUser";
 
 // import { ExludeField } from "../model/exclude/excludefield.user";
 // import { UpdateUserInfo } from "../model/dto/updateUser";
@@ -131,7 +131,7 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
     }
   };
 
-export const UpdateUser = async (req: Request, res: Response) => {
+export const EditProfile = async (req: Request, res: Response) => {
   try {
     const paramid = req.params.id;
     
@@ -149,10 +149,6 @@ export const UpdateUser = async (req: Request, res: Response) => {
       return res.status(404).json({ msg: `User with id ${paramid} not found` });
     }
 
-    // if (user !== req.user) {
-    //   return res.status(403).json({ msg: "You can only update your profile" });
-    // }
-
     if (user._id.toString() !== (req.user as IUser)._id.toString()) {
 
       //console.log(user._id.toString(), (req.user as IUser)._id.toString() )
@@ -160,7 +156,7 @@ export const UpdateUser = async (req: Request, res: Response) => {
       return res.status(403).json({ msg: "You can only update your profile" });
     }
 
-    const updatedProfile = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       paramid,
       UpdateUserInfo,
       { new: true, runValidators: true }
