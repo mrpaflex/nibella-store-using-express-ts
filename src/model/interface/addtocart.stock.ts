@@ -1,25 +1,20 @@
 import { Document } from 'mongoose';
 
 export interface AddToCartStock extends Document {
-  id: {
-   type: String[],
-   required: true
-};
+id: [string];
+quantity: any;
 
-quantity: {
-    type: Number,
-    default: 1,
-    required: true
-};
+size: any;
+color: any
 
-size:{
-    type: String,
-    required: true
-};
+// size:{
+//     type: String,
+//     required: true
+// };
 
-color: {
-    type: String,
-    required: true
-}
+// color: {
+//     type: String,
+//     required: true
+// }
 
 }

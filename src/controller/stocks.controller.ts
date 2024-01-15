@@ -1,5 +1,5 @@
 import {Request, Response } from "express";
-import {IStock, Stock} from '../model/Stock.model';
+import {Stock} from '../model/Stock.model';
 import {cloudinary} from '../common/cloudinary/cloudinary.config';
 import { AddToCartStock } from "../model/interface/addtocart.stock";
 
@@ -80,37 +80,47 @@ export const DeleteStockById = async (req: Request, res: Response) => {
 };
 
 export const AddToCart = async (req: Request, res: Response) => {
-  
-  const { id, quantity, size, color }: AddToCartStock = req.body;
+  const { items }: { items: { id: string; quantity: number; size?: string; color?: string }[] } = req.body;
 
-  
-  const requiredFields = [ 'id', 'size', 'color'];
+  const requiredFields = ['id', 'size', 'color'];
   for (const field of requiredFields) {
-    if (!req.body[field]) {
-      return res.status(400).json({ msg: `${field} must be selected` });
+    if (!items.every((item: any) => item[field])) {
+      return res.status(400).json({ msg: `${field} must be selected for each item` });
     }
   }
-  
-  let cart: { id: string; quantity: any; size: any; color: any}[] = [];
-  try {
-   // const stockId = (req.user as IStock)._id.toString()
-    const stocks = await Stock.find({
-      _id: { $in: id },
-      outofstock: false,
-    });
 
-    if (!stocks || stocks.length === 0) {
-      return res.status(404).json({ msg: "Product IDs not found or out of stock" });
+  try {
+    let cart: { id: string; quantity: number; size?: string; color?: string }[] = [];
+
+    for (const item of items) {
+      const stock = await Stock.findOne({
+        _id: item.id,
+      });
+
+      if (!stock?._id) {
+        return res.status(404).json({ msg: `Product with ID ${item.id} not found` });
+      }
+
+      if (stock?.outofstock === true) {
+        return res.status(404).json({ msg: `selected product ${stock._id} out of stock` });
+      }
+
+      cart.push({
+        id: stock._id.toString(),
+        quantity: item.quantity || 1,
+        size: item.size,
+        color: item.color,
+      });
     }
-    stocks.forEach((stock) => {
-      cart.push({ id: stock._id.toString(), quantity: quantity || 1, size: size, color:color });
-    });
+
+    console.log(cart)
+
     if (!cart || cart.length === 0) {
       return res.status(405).json({ msg: "Your cart is empty" });
     }
 
     res.status(200).json({ message: 'Products added to cart', cart });
   } catch (error) {
-    res.status(500).json({ msg: "Internal server error", error});
+    res.status(500).json({ msg: "Internal server error", error });
   }
 };
