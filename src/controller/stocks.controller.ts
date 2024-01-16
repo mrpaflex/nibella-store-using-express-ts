@@ -1,7 +1,10 @@
 import {Request, Response } from "express";
 import {Stock} from '../model/Stock.model';
+import  { Session } from 'express-session';
 import {cloudinary} from '../common/cloudinary/cloudinary.config';
-import { AddToCartStock } from "../model/interface/addtocart.stock";
+import mongoose from "mongoose";
+import { IUser } from "../model/User.model";
+
 
 export const UploadStock = async (req: Request, res: Response)=>{
   
@@ -80,9 +83,19 @@ export const DeleteStockById = async (req: Request, res: Response) => {
 };
 
 export const AddToCart = async (req: Request, res: Response) => {
+  let user = (req.user as IUser);
+  
+
+  interface CustomSession extends Session {
+   // user?: {_id: string; userName: string};
+    passport?: { user: string };
+    cart?: { id: string; quantity: number; size?: string; color?: string }[];
+  }
+
   const { items }: { items: { id: string; quantity: number; size?: string; color?: string }[] } = req.body;
 
   const requiredFields = ['id', 'size', 'color'];
+
   for (const field of requiredFields) {
     if (!items.every((item: any) => item[field])) {
       return res.status(400).json({ msg: `${field} must be selected for each item` });
@@ -90,19 +103,23 @@ export const AddToCart = async (req: Request, res: Response) => {
   }
 
   try {
-    let cart: { id: string; quantity: number; size?: string; color?: string }[] = [];
+    const customSession = req.session as CustomSession;
+
+    if (!user) {
+      return res.status(401).json({ msg: 'User not authenticated' });
+    }
+
+    let cart: { id: string; quantity: number; size?: string; color?: string }[] = []
 
     for (const item of items) {
-      const stock = await Stock.findOne({
-        _id: item.id,
-      });
+      const stock = await Stock.findOne({ _id: item.id });
 
       if (!stock?._id) {
         return res.status(404).json({ msg: `Product with ID ${item.id} not found` });
       }
 
       if (stock?.outofstock === true) {
-        return res.status(404).json({ msg: `selected product ${stock._id} out of stock` });
+        return res.status(404).json({ msg: `Selected product ${stock._id} out of stock` });
       }
 
       cart.push({
@@ -113,14 +130,51 @@ export const AddToCart = async (req: Request, res: Response) => {
       });
     }
 
-    console.log(cart)
-
     if (!cart || cart.length === 0) {
       return res.status(405).json({ msg: "Your cart is empty" });
     }
+
+    customSession.cart = cart;
 
     res.status(200).json({ message: 'Products added to cart', cart });
   } catch (error) {
     res.status(500).json({ msg: "Internal server error", error });
   }
 };
+
+
+export const OrderPage = async (req: Request, res: Response)=>{
+ let user = (req.user as IUser);
+
+  interface CustomSession extends Session {
+   // user?: {_id: string; userName: string};
+   passport?: { user: string };
+   cart?: { id: string; quantity: number; size?: string; color?: string }[];
+  }
+
+  const customSession = req.session as CustomSession;
+  const cartItems = customSession;
+  try {
+
+    if (!user) {
+      return res.status(401).json({ msg: 'User not authenticated' });
+    }
+
+   
+
+    if (!cartItems.passport) {
+      return res.status(403).json({msg: "can not proceed"})
+    }
+
+    if (user._id.toString() !== cartItems.passport.user.toString()) {
+      console.log(user._id.toString(), cartItems.passport.user.toString())
+      return res.status(401).json({ msg: 'id not same, can not proceed ' });
+    }
+  
+    return res.status(201).json({msg: cartItems.cart})
+  // res.send(`items selected for purchase, ${cartItems}`);
+  // res.render('orderPageHtml', {cart: cartItems})//this is when sending it to the frontend
+  } catch (error) {
+    
+  }
+}
