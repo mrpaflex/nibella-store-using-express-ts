@@ -5,6 +5,8 @@ import {main_router} from './router/main.router';
 import passport from 'passport';
 import session from 'express-session';
 import {PassportStrategy} from './strategy/passport.local.strategy';
+const cors = require('cors')
+//import {cors} from 'cors'
 import * as dotenv from "dotenv";
 dotenv.config()
 
@@ -13,6 +15,7 @@ const app= express();
 connectDB();
 PassportStrategy(passport)
 
+app.use(cors())
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 

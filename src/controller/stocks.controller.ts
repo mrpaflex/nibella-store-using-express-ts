@@ -83,8 +83,7 @@ export const DeleteStockById = async (req: Request, res: Response) => {
 };
 
 export const AddToCart = async (req: Request, res: Response) => {
-  let user = (req.user as IUser);
-  
+ let user = (req.user as IUser);
 
   interface CustomSession extends Session {
    // user?: {_id: string; userName: string};
@@ -266,65 +265,6 @@ export const StocksPayment = async (req: Request, res: Response)=>{
    }
  };
 
-//  export const VerifyPayment = async (req: Request, res: Response)=>{
-//   const referId = req.params.referenceId;
-// const options = {
-//   hostname: 'api.paystack.co',
-//   port: 443,
-//   path: `/transaction/verify/:${referId}`,
-//   method: 'GET',
-//   headers: {
-//     Authorization: `Bearer ${process.env.PAYSTACK_SRCRET}`
-//   }
-// }
-
-// https.request(options, resParam => {
-//   let data = ''
-
-//   resParam.on('data', (chunk) => {
-//     data += chunk
-//   });
-
-//   resParam.on('end', () => { 
-//     console.log(JSON.parse(data))
-//     res.status(200).json({msg: data})
-//   })
-
- 
-// }).on('error', error => {
-//   console.error(error)
-// })
-//  }
-
-// export const VerifyPayment = async (req: Request, res: Response) => {
-//   const referId = req.params.referenceId;
-//   const options = {
-//     hostname: 'api.paystack.co',
-//     port: 443,
-//     path: `/transaction/verify/${referId}`, 
-//     method: 'GET',
-//     headers: {
-//       Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`
-//     }
-//   };
-
-//   https.request(options, resParam => {
-//     let data = '';
-
-//     resParam.on('data', (chunk) => {
-//       data += chunk;
-//     });
-
-//     resParam.on('end', () => {
-//       const responseData = JSON.parse(data);
-//       res.status(200).json({ msg: responseData });
-//     });
-//   }).on('error', error => {
-//     res.status(500).json({ msg: 'Internal server error' });
-//   }).end(); // Ensure to end the request
-
-//   // Note: The response will be sent inside the 'end' event handler
-// };
 
 export const VerifyPayment = async (req: Request, res: Response) => {
   const referId = req.params.referenceId;
@@ -335,7 +275,8 @@ export const VerifyPayment = async (req: Request, res: Response) => {
     path: `/transaction/verify/${referId}`,
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`
+      Authorization: `Bearer ${process.env.PAYSTACK_SRCRET}`,
+      'Content-Type': 'application/json'
     }
   };
 
@@ -347,26 +288,28 @@ export const VerifyPayment = async (req: Request, res: Response) => {
     });
 
     resParam.on('end', () => {
-      console.log(data);
       try {
         const responseData = JSON.parse(data);
-        // console.log(responseData);
 
         if (responseData.status) {
+          //define entities to save in db here.like
+          //amount, reference, user_email, user_fullName, transactiion_status,
+          //product purchase id and so on depending on what you need
+       const amount=  responseData.data.amount / 100;
+
+         console.log(responseData)
           res.status(200).json({ msg: responseData });
         } else {
           res.status(400).json({ msg: 'Payment verification failed', details: responseData.message });
         }
       } catch (error) {
-        console.error('Error parsing Paystack response:', error);
-        res.status(500).json({ msg: 'Internal server error' });
+        res.status(500).json({ msg: 'Internal server error', error });
       }
     });
   });
 
   request.on('error', error => {
-    console.error('Paystack request error:', error);
-    res.status(500).json({ msg: 'Internal server error' });
+    res.status(500).json({ msg: 'Internal server error', error });
   });
 
   request.end(); // Ensure to end the request

@@ -33,9 +33,9 @@ export const PassportStrategy = async (passport: any)=> {
     });
     
 
-    passport.deserializeUser(async (_id: string, done: any) => {
+    passport.deserializeUser(async (id: string, done: any) => {
       try {
-        const user = await User.findById(_id);
+        const user = await User.findById(id);
         return done(null, user);
       } catch (error) {
         return done(error);
