@@ -5,8 +5,8 @@ export interface IStock extends Document {
     _id: mongoose.Types.ObjectId;
     name: string,
     price: number,
-    size: string,
-    color: string,
+    // size: string,
+    // color: string,
     images: [object],
     userid: mongoose.Schema.Types.ObjectId,
     cloudinary_id: Boolean,
@@ -27,15 +27,15 @@ const StockSchema = new mongoose.Schema({
         required: true
     },
 
-    size:{
-        type: String,
-        required: true
-    },
+    // size:{
+    //     type: String,
+    //     required: true
+    // },
  
-    color:{
-        type: String,
-        required: true
-    },
+    // color:{
+    //     type: String,
+    //     required: true
+    // },
  
     images:{
         type: [Object],

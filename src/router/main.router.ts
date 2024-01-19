@@ -2,7 +2,7 @@ import  express from "express";
 export const main_router = express.Router();
 import {homePage} from '../controller/home.controller'
 import {LogInUser, SignUp, SuspendUser, UnSuspendUser, EditProfile} from '../controller/auth.controller'
-import {GetAllClothes, UploadStock, GetOneStockById, DeleteStockById, AddToCart, OrderPage} from "../controller/stocks.controller";
+import {GetAllClothes, UploadStock, GetOneStockById, DeleteStockById, AddToCart, ConfirmedOrder, StocksPayment, VerifyPayment} from "../controller/stocks.controller";
 import { ensureAuth } from "../middleware/passport.middleware";
 import { restrict } from "../middleware/user.role";
 import { UserType } from "../enum/user.enum";
@@ -30,4 +30,8 @@ main_router.put('/user/editProfile/:id', ensureAuth, EditProfile);
 
 main_router.post('/user/addToCart',ensureAuth, AddToCart);
 
-main_router.get('/product/orderPage', ensureAuth, OrderPage)
+main_router.get('/confirmed/orderPage', ensureAuth, ConfirmedOrder);
+main_router.post('/stock/payment',ensureAuth, StocksPayment);
+
+main_router.get('/verify/payment/:referenceId', ensureAuth, VerifyPayment);
+
