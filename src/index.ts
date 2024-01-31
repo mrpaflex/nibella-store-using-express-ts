@@ -5,11 +5,11 @@ import {main_router} from './router/main.router';
 import passport from 'passport';
 import session from 'express-session';
 import {PassportStrategy} from './strategy/passport.local.strategy';
-const cors = require('cors')
+ const cors = require('cors')
 import * as dotenv from "dotenv";
 dotenv.config()
 
-const port = process.env.NODE_LOCAL_PORT || 3000;
+
 const app= express();
 
 PassportStrategy(passport)
@@ -45,7 +45,7 @@ app.use(main_router)
 
 
 
-
+const port = process.env.NODE_LOCAL_PORT || 3000;
 app.listen(port, () => {
     console.log(`Now running on port ${port}, please use me>>>`);
    

@@ -1,4 +1,5 @@
 import mongoose, { Document } from 'mongoose';
+import { StockTypes } from '../enum/stocks.enum';
 
 
 export interface IStock extends Document {
@@ -26,22 +27,19 @@ const StockSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-
-    // size:{
-    //     type: String,
-    //     required: true
-    // },
- 
-    // color:{
-    //     type: String,
-    //     required: true
-    // },
  
     images:{
         type: [Object],
         required: true,
     },
     
+    stockType:{
+        required: true,
+        type: String,
+        enum: Object.values(StockTypes),
+  
+    },
+
     userid:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',

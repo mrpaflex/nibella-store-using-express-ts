@@ -5,6 +5,7 @@ import {cloudinary} from '../common/cloudinary/cloudinary.config';
 import { IUser } from "../model/User.model";
 import * as https from 'https';
 import * as dotenv from "dotenv";
+import { StockTypes } from "../enum/stocks.enum";
 //import { Request, Response } from 'express-serve-static-core'
 dotenv.config()
 // console.log(https)
@@ -12,8 +13,8 @@ dotenv.config()
 export const UploadStock = async (req: Request, res: Response)=>{
   
     try {
-    const {name, price} = req.body;
-    const requiredFields = ['name', 'price'];
+    const {name, price, stockType} = req.body;
+    const requiredFields = ['name', 'price', 'stockType'];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         return res.status(400).json({ msg: `${field} is required` });
@@ -26,9 +27,10 @@ export const UploadStock = async (req: Request, res: Response)=>{
 
     const result = await cloudinary.uploader.upload(req.file.path);
 
-     await Stock.create({
+  await Stock.create({
     name,
     price,
+    stockType,
     images: result.secure_url,
     cloudinary_id: result.public_id
    })
@@ -40,9 +42,9 @@ export const UploadStock = async (req: Request, res: Response)=>{
     }
 };
 
-export const GetAllClothes = async (req: Request, res: Response)=>{
+export const GetAllClothes = async (req: Request, res: Response)=>{ 
 try {
-  const resPerPage = 10;
+  const resPerPage = 20;
   const currentPage = Number(req.query.page); 
   const skip = resPerPage * (currentPage - 1);
 
@@ -53,6 +55,91 @@ try {
   res.status(500).json({ msg: 'Internal Server Error', error });
 }
 }
+
+export const GetOnlyMenWears = async (req: Request, res: Response)=>{ 
+  try {
+    const resPerPage = 20;
+    const currentPage = Number(req.query.page); 
+    const skip = resPerPage * (currentPage - 1);
+  
+    const seletedfileld = "name price images"
+    const stocks = await Stock.find({
+      stockType: StockTypes.MEN_CLOTHES,
+      deleted: false
+    }).select(seletedfileld).limit(resPerPage).skip(skip).lean()
+    res.status(200).json({stocks}) 
+  } catch (error) {
+    res.status(500).json({ msg: 'Internal Server Error', error });
+  }
+  }
+
+  export const GetOnlyWomenWear = async (req: Request, res: Response)=>{ 
+    try {
+      const resPerPage = 20;
+      const currentPage = Number(req.query.page); 
+      const skip = resPerPage * (currentPage - 1);
+    
+      const seletedfileld = "name price images"
+      const stocks = await Stock.find({
+        stockType: StockTypes.WOMEN_CLOTHES,
+        deleted: false
+      }).select(seletedfileld).limit(resPerPage).skip(skip).lean()
+      res.status(200).json({stocks}) 
+    } catch (error) {
+      res.status(500).json({ msg: 'Internal Server Error', error });
+    }
+    }
+
+    //from here set
+    export const GetOnlyHairs = async (req: Request, res: Response)=>{ 
+      try {
+        const resPerPage = 20;
+        const currentPage = Number(req.query.page); 
+        const skip = resPerPage * (currentPage - 1);
+      
+        const seletedfileld = "name price images"
+        const stocks = await Stock.find({
+          stockType: StockTypes.HAIR,
+          deleted: false
+        }).select(seletedfileld).limit(resPerPage).skip(skip).lean()
+        res.status(200).json({stocks}) 
+      } catch (error) {
+        res.status(500).json({ msg: 'Internal Server Error', error });
+      }
+      }
+
+      export const GetOnlyComestics = async (req: Request, res: Response)=>{ 
+        try {
+          const resPerPage = 20;
+          const currentPage = Number(req.query.page); 
+          const skip = resPerPage * (currentPage - 1);
+        
+          const seletedfileld = "name price images"
+          const stocks = await Stock.find({
+            stockType: StockTypes.COMESTICS,
+            deleted: false
+          }).select(seletedfileld).limit(resPerPage).skip(skip).lean()
+          res.status(200).json({stocks}) 
+        } catch (error) {
+          res.status(500).json({ msg: 'Internal Server Error', error });
+        }
+        }
+ export const GetOnlyShoes = async (req: Request, res: Response)=>{ 
+          try {
+            const resPerPage = 20;
+            const currentPage = Number(req.query.page); 
+            const skip = resPerPage * (currentPage - 1);
+          
+            const seletedfileld = "name price images"
+            const stocks = await Stock.find({
+              stockType: StockTypes.SHOES,
+              deleted: false
+            }).select(seletedfileld).limit(resPerPage).skip(skip).lean()
+            res.status(200).json({stocks}) 
+          } catch (error) {
+            res.status(500).json({ msg: 'Internal Server Error', error });
+          }
+ }
 
 export const GetOneStockById = async(req: Request, res: Response)=>{
   try {
