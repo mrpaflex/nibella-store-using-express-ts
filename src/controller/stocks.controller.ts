@@ -5,6 +5,7 @@ import {cloudinary} from '../common/cloudinary/cloudinary.config';
 import { IUser } from "../model/User.model";
 import * as https from 'https';
 import * as dotenv from "dotenv";
+//import { Request, Response } from 'express-serve-static-core'
 dotenv.config()
 // console.log(https)
 
@@ -40,9 +41,17 @@ export const UploadStock = async (req: Request, res: Response)=>{
 };
 
 export const GetAllClothes = async (req: Request, res: Response)=>{
+try {
+  const resPerPage = 10;
+  const currentPage = Number(req.query.page); 
+  const skip = resPerPage * (currentPage - 1);
+
   const seletedfileld = "name price images"
-  const stocks = await Stock.find({deleted: false}).select(seletedfileld).lean();
+  const stocks = await Stock.find({deleted: false}).select(seletedfileld).limit(resPerPage).skip(skip).lean()
   res.status(200).json({stocks}) 
+} catch (error) {
+  res.status(500).json({ msg: 'Internal Server Error', error });
+}
 }
 
 export const GetOneStockById = async(req: Request, res: Response)=>{
@@ -59,6 +68,29 @@ export const GetOneStockById = async(req: Request, res: Response)=>{
   }
   
 }
+
+
+export const FindStocksByName = async (req: Request, res: Response) => {
+  const resPerPage = 6;
+  const currentPage = Number(req.query.page); 
+  const skip = resPerPage * (currentPage - 1);
+  try {
+    const stockname = req.params.name;
+
+    const regex = new RegExp(stockname, 'i');
+
+    const selectedFields = "name price images"; 
+    const stock = await Stock.find({ name: regex, deleted: false }).select(selectedFields).limit(resPerPage).skip(skip).lean()
+
+    if (!stock || stock.length === 0) { 
+      return res.status(404).json({ msg: `Stock with name '${stockname}' not found` });
+    }
+    res.status(200).json({ stock });
+  } catch (error) {
+    res.status(500).json({ msg: 'Internal Server Error', error });
+  }
+}
+
 
 export const DeleteStockById = async (req: Request, res: Response) => {
   try {

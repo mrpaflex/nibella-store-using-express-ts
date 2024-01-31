@@ -6,14 +6,16 @@ import passport from 'passport';
 import session from 'express-session';
 import {PassportStrategy} from './strategy/passport.local.strategy';
 const cors = require('cors')
-//import {cors} from 'cors'
 import * as dotenv from "dotenv";
 dotenv.config()
 
-const port = process.env.PORT || 3000;
+const port = process.env.NODE_LOCAL_PORT || 3000;
 const app= express();
-connectDB();
+
 PassportStrategy(passport)
+
+
+connectDB();
 
 app.use(cors())
 app.use(express.urlencoded({extended: true}));
@@ -43,6 +45,8 @@ app.use(main_router)
 
 
 
+
 app.listen(port, () => {
     console.log(`Now running on port ${port}, please use me>>>`);
+   
 });
