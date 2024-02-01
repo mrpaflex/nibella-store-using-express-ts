@@ -1,10 +1,10 @@
 import express = require('express');
-import { connectDB } from './configdb/db';
+import { connectDB } from './src/configdb/db';
 import MongoStore from 'connect-mongo';
-import {main_router} from './router/main.router';
+import {main_router} from './src/router/main.router';
 import passport from 'passport';
 import session from 'express-session';
-import {PassportStrategy} from './strategy/passport.local.strategy';
+import {PassportStrategy} from './src/strategy/passport.local.strategy';
  const cors = require('cors')
 import * as dotenv from "dotenv";
 dotenv.config()
