@@ -7,6 +7,7 @@ export interface IUser extends Document {
     email: string;
     userName: string;
     telephone: string;
+    refreshToken: string;
     password: string;
     userRole: string[];
     gender: string;
@@ -65,6 +66,11 @@ const UserSchema = new mongoose.Schema({
         enum: Object.values(UserType),
         default: [UserType.CUSTOMER],
     },
+
+    refreshToken:{
+        type: String,
+    },
+    
     date:{
         default: Date.now,
         type: Date

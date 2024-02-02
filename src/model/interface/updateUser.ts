@@ -10,5 +10,7 @@ export interface IUserUpdate{
 
     telephone?: string;
 
-    address?: string
+    address?: string;
+
 }
+
