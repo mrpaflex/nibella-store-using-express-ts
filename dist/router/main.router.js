@@ -17,6 +17,7 @@ exports.main_router.get('/', home_controller_1.homePage);
 exports.main_router.post('/user/Signup', auth_controller_1.SignUp);
 exports.main_router.post('/user/Login', auth_controller_1.LogInUser);
 exports.main_router.post('/upload/stock', passport_middleware_1.ensureAuth, (0, user_role_1.restrict)([user_enum_1.UserType.ADMIN]), multer_upload_1.multerUpload.single('file'), stocks_controller_1.UploadStock);
+exports.main_router.get('/user/logout', passport_middleware_1.ensureAuth, auth_controller_1.LogoutUser);
 exports.main_router.get('/stock/findAll', stocks_controller_1.GetAllClothes);
 exports.main_router.get('/stock/findOnlyMenWear', stocks_controller_1.GetOnlyMenWears);
 exports.main_router.get('/stock/findOnlyWomenWear', stocks_controller_1.GetOnlyWomenWear);

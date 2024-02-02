@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EditProfile = exports.UnSuspendUser = exports.SuspendUser = exports.LogInUser = exports.SignUp = void 0;
+exports.LogoutUser = exports.EditProfile = exports.UnSuspendUser = exports.SuspendUser = exports.LogInUser = exports.SignUp = void 0;
 const User_model_1 = require("../model/User.model");
 const express_validator_1 = require("express-validator");
 const hashedPassword_1 = require("../common/hashedPassword");
@@ -144,3 +144,21 @@ const EditProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.EditProfile = EditProfile;
+const LogoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    req.logOut((err) => {
+        if (req.session) {
+            req.session.destroy(err => {
+                if (err) {
+                    res.status(500).json({ msg: 'failed to log out', err });
+                }
+                res.clearCookie('cookie');
+                return res.status(200).json({ message: 'Logout successful' });
+            });
+        }
+        else {
+            res.clearCookie('cookie');
+            return res.status(200).json({ message: 'Logout successful' });
+        }
+    });
+});
+exports.LogoutUser = LogoutUser;

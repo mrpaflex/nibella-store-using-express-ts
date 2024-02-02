@@ -167,3 +167,21 @@ export const EditProfile = async (req: Request, res: Response) => {
     return res.status(500).json({ msg: 'Internal Server Error', error });
   }
 };
+
+export const LogoutUser = async (req: Request, res: Response)=>{
+  req.logOut((err)=>{
+    if (req.session) {
+      req.session.destroy(err =>{
+        if (err) {
+          res.status(500).json({msg: 'failed to log out', err})
+        }
+        res.clearCookie('cookie');
+        return res.status(200).json({ message: 'Logout successful' });
+      })
+    }else{
+      res.clearCookie('cookie')
+      return res.status(200).json({ message: 'Logout successful' });
+    }
+   
+  })
+}
