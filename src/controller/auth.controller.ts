@@ -27,9 +27,10 @@ export const SignUp = async (req: Request, res: Response) => {
         }
       }
   
+      
       const user = await User.findOne({
         $or: [{ email: email }, { userName: userName }],
-      });
+      }).lean();
   
       if (user) {
         return res.status(400).json({ msg: 'User with the same credentials already exists' });
@@ -81,6 +82,31 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
     })(req, res, next);
   };
 
+
+  export const FindOneUser = async (req: Request, res: Response)=>{
+    try {
+    const userId = req.params.id
+    const seletedfileld = "fullName userName telephone email"
+    const user = await User.findById(userId).select(seletedfileld).lean()
+    if (!user) {
+      return res.status(405).json({msg: 'user not found'})
+    }
+
+    return res.status(200).json({user: user})
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+  export const FindAllUser = async (req: Request, res: Response)=>{
+    try {
+      const seletedfileld = "fullName userName telephone email"
+    const user = await User.find().select(seletedfileld).lean();
+    return res.status(200).json({user: user})
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
   export const SuspendUser = async (req: Request, res: Response) => {
     try {
       const paramid = req.params.id;
