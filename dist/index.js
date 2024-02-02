@@ -51,8 +51,8 @@ app.use((0, express_session_1.default)({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false,
-        maxAge: 1 * 60 * 60 * 1000 //1 hours
+        secure: true,
+        maxAge: 15 * 60 * 1000 //15 minutes for production
     },
     store: connect_mongo_1.default.create({ mongoUrl: process.env.MONGO_URI }),
 }));
