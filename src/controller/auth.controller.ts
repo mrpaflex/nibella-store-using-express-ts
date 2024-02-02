@@ -168,20 +168,28 @@ export const EditProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const LogoutUser = async (req: Request, res: Response)=>{
-  req.logOut((err)=>{
-    if (req.session) {
-      req.session.destroy(err =>{
-        if (err) {
-          res.status(500).json({msg: 'failed to log out', err})
-        }
-        res.clearCookie('cookie');
-        return res.status(200).json({ message: 'Logout successful' });
-      })
-    }else{
-      res.clearCookie('cookie')
-      return res.status(200).json({ message: 'Logout successful' });
+
+export const LogoutUser = async (req: Request, res: Response) => {
+  req.logOut((err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Failed to log out', error: err });
     }
-   
-  })
+
+    if (req.session) {
+      req.session.destroy((destroyErr) => {
+        if (destroyErr) {
+          return res.status(500).json({ message: 'Failed to destroy session', error: destroyErr });
+        }
+        clearCookieAndRespond(res);
+      });
+    } else {
+      clearCookieAndRespond(res);
+    }
+  });
+};
+
+function clearCookieAndRespond(res: Response) {
+  res.clearCookie('cookie');
+  return res.status(200).json({ message: 'Logout successful' });
 }
+
