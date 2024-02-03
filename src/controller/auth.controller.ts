@@ -5,8 +5,8 @@ import { comparedPassword, hashedPassword } from "../common/hashedPassword";
 import passport from "passport";
 import { IUserUpdate } from "../model/interface/updateUser";
 import { GenerateAccessToken, GenerateRefreshToken, VerifyJwt } from "../middleware/jsonToken/jwtToken.jwt";
-import jwt from 'jsonwebtoken';
-//const jwt = require('jsonwebtoken')
+//import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken')
 import {config} from 'dotenv';
 config()
 
