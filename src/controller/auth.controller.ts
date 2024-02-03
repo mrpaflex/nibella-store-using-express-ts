@@ -77,7 +77,7 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
             next(err)
          //  return res.status(400).json({msg: err}) 
           }
-      const N_user = (user as IUser)
+      const N_user = (req.user as IUser)
      const Accesstoken = await GenerateAccessToken(N_user._id.toString());
      const GenfreshToken = await GenerateRefreshToken(N_user._id.toString());
      const refreshToken = await hashedPassword(GenfreshToken)
