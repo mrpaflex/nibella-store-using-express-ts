@@ -5,7 +5,8 @@ import { comparedPassword, hashedPassword } from "../common/hashedPassword";
 import passport from "passport";
 import { IUserUpdate } from "../model/interface/updateUser";
 import { GenerateAccessToken, GenerateRefreshToken, VerifyJwt } from "../middleware/jsonToken/jwtToken.jwt";
-import jwt from 'jsonwebtoken';
+//import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken')
 import {config} from 'dotenv';
 config()
 
@@ -125,11 +126,11 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
   export const RefreshToken = async (req: Request, res: Response)=>{
     const paramRefreshToken = req.params.refreshtoken;
     
- jwt.verify(paramRefreshToken, process.env.REFRESH_TOKEN_SECRET!, (err, user)=>{
+ jwt.verify(paramRefreshToken, process.env.REFRESH_TOKEN_SECRET!, (err: any, user: any)=>{
       if (err) {
         return res.status(400).json({msg: 'invalid token'})
       }
-     return
+     return;
     })
 
     const useri = (req.user as IUser);
