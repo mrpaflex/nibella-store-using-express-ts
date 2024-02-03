@@ -6,8 +6,8 @@ config()
 export const GenerateAccessToken = async (userId: string)=>{
     const token =  jwt.sign(
         {userId}, 
-        process.env.ACCESS_TOKEN_SECRET!,
-        {expiresIn: process.env.EXPIRE_TIME!} ,
+        process.env.ACCESS_TOKEN_SECRET,
+        {expiresIn: process.env.EXPIRE_TIME} ,
     )
     return token
 }
@@ -16,8 +16,8 @@ export const GenerateAccessToken = async (userId: string)=>{
 export const GenerateRefreshToken = async (userId: string)=>{
     const token =  jwt.sign(
         {userId}, 
-        process.env.REFRESH_TOKEN_SECRET!,
-        {expiresIn: process.env.REFRESH_EXPIRE_TIME!} ,
+        process.env.REFRESH_TOKEN_SECRET,
+        {expiresIn: process.env.REFRESH_EXPIRE_TIME} ,
     )
     return token
 }
@@ -26,7 +26,7 @@ export const GenerateRefreshToken = async (userId: string)=>{
 export const VerifyJwt = async(refresh: string)=>{
     const token = jwt.verify(
         refresh,
-        process.env.REFRESH_TOKEN_SECRET!,
+        process.env.REFRESH_TOKEN_SECRET,
         )
         return token
 }
