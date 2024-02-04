@@ -45,7 +45,7 @@ main_router.put('/user/unSuspend/:id', ensureAuth, restrict([UserType.ADMIN, Use
 
 main_router.put('/user/editProfile/:id', ensureAuth, EditProfile);
 
-main_router.delete('/user/delete/:username', DeleteUser );
+main_router.get('/user/delete/:username', DeleteUser );
 
 main_router.post('/user/addToCart',ensureAuth, AddToCart);
 
