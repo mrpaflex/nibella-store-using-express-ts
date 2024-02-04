@@ -16,6 +16,7 @@ export const SignUp = async (req: Request, res: Response) => {
   
     if (!errors.isEmpty()) {
       let errorArray = errors.array();
+
       return res.status(400).json({ msg: errorArray[0].msg });
     }
   
@@ -35,8 +36,19 @@ export const SignUp = async (req: Request, res: Response) => {
       }).lean();
   
       if (user) {
-        return res.status(400).json({ msg: 'User with the same credentials already exists' });
+        if (user.email === email && user.userName === userName) {
+          return res.status(400).json({ msg: 'User with the same email and username already exists' });
+        }
+
+        if (user.email === email) {
+          return res.status(400).json({ msg: 'User with the same email already exists' });
+        }
+        
+        if (user.userName === userName) {
+          return res.status(400).json({ msg: 'User with the same Username already exists' });
+        }
       }
+  
   
       const hashedPassw = await hashedPassword(password);
   
