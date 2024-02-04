@@ -1,7 +1,7 @@
 import  express from "express";
 export const main_router = express.Router();
 import {homePage} from '../controller/home.controller'
-import {LogInUser, SignUp, SuspendUser, UnSuspendUser, EditProfile, LogoutUser, FindOneUser, FindAllUser} from '../controller/auth.controller'
+import {LogInUser, SignUp, SuspendUser, UnSuspendUser, EditProfile, LogoutUser, FindOneUser, FindAllUser, DeleteUser} from '../controller/auth.controller'
 import {GetAllClothes, UploadStock, GetOneStockById, DeleteStockById, AddToCart, ConfirmedOrder, StocksPayment, VerifyPayment, FindStocksByName, GetOnlyMenWears, GetOnlyWomenWear, GetOnlyHairs, GetOnlyComestics, GetOnlyShoes} from "../controller/stocks.controller";
 import { ensureAuth } from "../middleware/passport.middleware";
 import { restrict } from "../middleware/user.role";
@@ -44,6 +44,8 @@ main_router.put('/user/suspend/:id', ensureAuth, restrict([UserType.ADMIN, UserT
 main_router.put('/user/unSuspend/:id', ensureAuth, restrict([UserType.ADMIN, UserType.MODERATOR]), UnSuspendUser);
 
 main_router.put('/user/editProfile/:id', ensureAuth, EditProfile);
+
+main_router.delete('/user/delete/:username', DeleteUser );
 
 main_router.post('/user/addToCart',ensureAuth, AddToCart);
 

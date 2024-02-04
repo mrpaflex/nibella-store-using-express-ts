@@ -235,3 +235,21 @@ function clearCookieAndRespond(res: Response) {
   return res.status(200).json({ message: 'Logout successful' });
 }
 
+export const DeleteUser = async (req: Request, res: Response) => {
+  const username = req.params.username;
+
+  try {
+    const deletedUser = await User.findOneAndDelete({ userName: username });
+
+    if (!deletedUser) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    return res.status(200).json({ msg: 'User deleted successfully'});
+
+  } catch (error) {
+    return res.status(500).json({ msg: 'Server error while deleting user' });
+  }
+};
+
+
