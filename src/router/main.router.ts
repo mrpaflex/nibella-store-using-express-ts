@@ -15,7 +15,8 @@ main_router.post('/user/Signup', SignUp);
 main_router.post('/user/Login', LogInUser);
 
 main_router.get('/user/findOne/:id', ensureAuth, restrict([UserType.ADMIN]), FindOneUser );
-main_router.get('/user/findAll', ensureAuth, restrict([UserType.ADMIN]), FindAllUser );
+main_router.get('/user/findAll', FindAllUser );
+// main_router.get('/user/findAll', ensureAuth, restrict([UserType.ADMIN]), FindAllUser );
 
 main_router.post('/upload/stock', ensureAuth, restrict([UserType.ADMIN]), multerUpload.single('file'), UploadStock);
 

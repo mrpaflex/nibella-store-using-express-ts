@@ -13,7 +13,7 @@ export const PassportStrategy = async (passport: any)=> {
         try {
          const user = await User.findOne({userName: userName})
          if (!user) {
-          return done(null, false)
+          return done(null, false, {message: "user does not exist"})
          }
          //check if password matched
          if (await comparedPassword(password, user.password) === false) {
@@ -26,7 +26,6 @@ export const PassportStrategy = async (passport: any)=> {
         }
       })
     );
-
 
     passport.serializeUser((user: IUser, done: any) => {
       done(null, user._id);

@@ -72,13 +72,19 @@ export const SignUp = async (req: Request, res: Response) => {
 
 export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
    
-    passport.authenticate('local', async (err: any, user: Express.User) => {
+    passport.authenticate('local', async (err: any, user: Express.User, done: any) => {
       try {
         if (err) {
           return res.status(400).json({ msg: err });
         }
-        if (!user) {
-          return res.status(400).json({ msg: 'User does not exist' });
+        if (done) {
+          if (done.message=== "user does not exist") {
+            return res.status(400).json({ msg: 'user does not exist' });
+          }
+          if (done.message === "password do not matched") {
+            return res.status(400).json({ msg: 'password do not matched' });
+          }
+         
         }
         req.logIn(user, async (err) => {
           // req.user = user;
