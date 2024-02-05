@@ -13,11 +13,11 @@ export const PassportStrategy = async (passport: any)=> {
         try {
          const user = await User.findOne({userName: userName})
          if (!user) {
-          return done(null, false, {message: "user does not exist"})
+          return done(null, false, {message: "1"})
          }
          //check if password matched
          if (await comparedPassword(password, user.password) === false) {
-         return done(null, false, {message: "password do not matched"})
+         return done(null, false, {message: "2"})
          }
          //return the user that is loggd in
          return done(null, user)

@@ -78,13 +78,12 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
           return res.status(400).json({ msg: err });
         }
         if (done) {
-          if (done.message=== "user does not exist") {
+          if (done.message === "1") {
             return res.status(400).json({ msg: 'user does not exist' });
           }
-          if (done.message === "password do not matched") {
+          if (done.message === "2") {
             return res.status(400).json({ msg: 'password do not matched' });
-          }
-         
+          }         
         }
         req.logIn(user, async (err) => {
           // req.user = user;
