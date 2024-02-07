@@ -1,7 +1,7 @@
 export enum StockTypes{
-    "HAIR"= "hair",
-    "MEN_CLOTHES"= "men_clothes",
-    "SHOES"= "shoes",
-    "COMESTICS"= "comestics",
-    "WOMEN_CLOTHES"="women_clothes"
+    "HAIR"= "Hair",
+    "MEN_CLOTHES"= "Male",
+    "SHOES"= "Shoes",
+    "COMESTICS"= "Cometics",
+    "WOMEN_CLOTHES"="Women"
 }
