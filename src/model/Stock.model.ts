@@ -4,6 +4,7 @@ import { StockTypes } from '../enum/stocks.enum';
 
 export interface IStock extends Document {
     _id: mongoose.Types.ObjectId;
+    
     name: string,
     price: number,
     // size: string,
