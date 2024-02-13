@@ -62,7 +62,7 @@ export const SignUp = async (req: Request, res: Response) => {
         address: address,
       });
   
-      return res.json({ 
+      return res.status(201).json({ 
         Respone: `you have successfully sign up ${createUser.fullName}`
        });
     } catch (error) {
@@ -86,15 +86,10 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
           }         
         }
         req.logIn(user, async (err) => {
-          // req.user = user;
           if (err) {
             next(err)
-         //  return res.status(400).json({msg: err}) 
           }
-   
-          //return req.user;
-         // res.status(200).json({msg: user})
-       return res.json({ msg: `logged in successfully` });
+       return res.status(200).json({ msg: `logged in successfully` });
         });
       } catch (error) {
         next(error);
