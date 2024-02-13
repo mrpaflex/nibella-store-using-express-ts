@@ -15,14 +15,14 @@ main_router.post('/user/Signup', SignUp);
 main_router.post('/user/Login', LogInUser);
 
 // must logged in and only the admin can find all user so update it later
-main_router.get('/user/findOne/:id', FindOneUser );
+main_router.get('/user/findOne/:id', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), FindOneUser );
 
+
+//main_router.get('/user/findAll', ensureAuth, restrict([UserType.ADMIN]), FindAllUser );
 main_router.get('/user/findAll', FindAllUser );
-// main_router.get('/user/findAll', ensureAuth, restrict([UserType.ADMIN]), FindAllUser );
 
-main_router.post('/upload/stock', multerUpload.single('file'), UploadStock);
-
-// main_router.post('/upload/stock', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), multerUpload.single('file'), UploadStock);
+///main_router.post('/upload/stock', multerUpload.single('file'), UploadStock);
+main_router.post('/upload/stock', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), multerUpload.single('file'), UploadStock);
 
 main_router.get('/user/logout', ensureAuth, LogoutUser );
 
@@ -43,13 +43,13 @@ main_router.get('/stock/findOne/:id', GetOneStockById);
 main_router.get('/stock/findItemsByName/:name', FindStocksByName);
 
 // must logged in and only the admin can delete a product so update it later
-main_router.delete('/delete/stockById/:id', DeleteStockById);
+main_router.delete('/delete/stockById/:id', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), DeleteStockById);
 
 // must logged in and only the admin can suspend a user so update it later
-main_router.put('/user/suspend/:id', SuspendUser);
+main_router.put('/user/suspend/:id', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), SuspendUser);
 
 // must logged in and only the admin can unsuspend a user so update it later
-main_router.put('/user/unSuspend/:id', UnSuspendUser);
+main_router.put('/user/unSuspend/:id', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), UnSuspendUser);
 
 main_router.put('/user/editProfile/:id', ensureAuth, EditProfile);
 
