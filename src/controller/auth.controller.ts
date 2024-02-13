@@ -92,9 +92,9 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
          //  return res.status(400).json({msg: err}) 
           }
    
-          //res.redirect('/')
           //return req.user;
          // res.status(200).json({msg: user})
+       return res.json({ msg: `logged in successfully` });
         });
       } catch (error) {
         next(error);
