@@ -278,12 +278,13 @@ export const AddToCart = async (req: Request, res: Response) => {
     res.status(200).json({ message: 'Products added to cart', cart });
 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ msg: "Internal server error", error });
   }
 };
 
 
-export const ConfirmedOrder = async (req: Request, res: Response)=>{
+export const CheckoutOrder = async (req: Request, res: Response)=>{
  let user = (req.user as IUser);
 
   interface CustomSession extends Session {
@@ -298,13 +299,13 @@ export const ConfirmedOrder = async (req: Request, res: Response)=>{
     if (!user) {
       return res.status(401).json({ msg: 'User not authenticated' });
     }
-    if (!cartItems.passport) {
-      return res.status(403).json({msg: "can not proceed"})
+    if (!cartItems.passport || !cartItems.cart) {
+      return res.status(403).json({msg: "Cart is empty or not found"})
     }
 
     if (user._id.toString() !== cartItems.passport.user.toString()) {
       console.log(user._id.toString(), cartItems.passport.user.toString())
-      return res.status(401).json({ msg: 'id not same, can not proceed ' });
+      return res.status(401).json({ msg: "User ID does not match, cannot proceed" });
     }
   
    
@@ -316,12 +317,11 @@ export const ConfirmedOrder = async (req: Request, res: Response)=>{
       }
     }
 
-    return res.status(201).json({msg: cartItems.cart, totalCartPrice})
+    return res.status(201).json({cart: cartItems.cart, totalCartPrice: totalCartPrice})
 
-  // res.send(`items selected for purchase, ${cartItems}`);
-  // res.render('orderPageHtml', {cart: cartItems})//this is when sending it to the frontend
   } catch (error) {
-    
+    console.log(error)
+    res.status(500).json({ msg: "Internal server error", error });
   }
 }
 
