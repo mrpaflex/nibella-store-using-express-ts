@@ -24,9 +24,11 @@ main_router.get('/user/findAll', FindAllUser );
 ///main_router.post('/upload/stock', multerUpload.single('file'), UploadStock);
 main_router.post('/upload/stock', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), multerUpload.single('file'), UploadStock);
 
-main_router.get('/user/logout', ensureAuth, LogoutUser );
+
 
 main_router.get('/stock/findAll', GetAllClothes );
+
+main_router.get('/stock/findOne/:id', GetOneStockById);
 
 main_router.get('/stock/findOnlyMenWear', GetOnlyMenWears );
 
@@ -38,7 +40,7 @@ main_router.get('/stock/findOnlyComestic', GetOnlyComestics );
 
 main_router.get('/stock/findOnlyShoes', GetOnlyShoes );
 
-main_router.get('/stock/findOne/:id', GetOneStockById);
+
 
 main_router.get('/stock/findItemsByName/:name', FindStocksByName);
 
@@ -55,10 +57,11 @@ main_router.put('/user/editProfile/:id', ensureAuth, EditProfile);
 
 main_router.get('/user/delete/:username', DeleteUser );
 
-main_router.post('/user/addToCart',ensureAuth, AddToCart);
+main_router.post('/user/addToCart/:id',ensureAuth, AddToCart);
 
 main_router.get('/confirmed/orderPage', ensureAuth, ConfirmedOrder);
 main_router.post('/stock/payment',ensureAuth, StocksPayment);
 
 main_router.get('/verify/payment/:referenceId', ensureAuth, VerifyPayment);
+main_router.get('/user/logout', ensureAuth, LogoutUser );
 

@@ -204,21 +204,21 @@ export const DeleteStockById = async (req: Request, res: Response) => {
 export const AddToCart = async (req: Request, res: Response) => {
  let user = (req.user as IUser);
 
+ const productId = req.params.id;
+ //remove this later
+ console.log('i am param product id', productId)
+
   interface CustomSession extends Session {
    // user?: {_id: string; userName: string};
     passport?: { user: string };
+    
     cart?: { id: string; quantity: number; size?: string; color?: string}[];
   }
 
-  const { items }: { items: { id: string; quantity: number; size?: string; color?: string}[] } = req.body;
+  const { items }: { items: { quantity: number; size?: string; color?: string} [] } = req.body;
 
-  const requiredFields = ['id', 'size', 'color'];
+  const requiredFields = ['size', 'color'];
 
-  for (const field of requiredFields) {
-    if (!items.every((item: any) => item[field])) {
-      return res.status(400).json({ msg: `${field} must be selected for each item` });
-    }
-  }
 
   try {
     const customSession = req.session as CustomSession;
@@ -230,10 +230,24 @@ export const AddToCart = async (req: Request, res: Response) => {
     let cart: { id: string; quantity: number; size?: string; color?: string, price: number }[] = []
 
     for (const item of items) {
-      const stock = await Stock.findOne({ _id: item.id });
+      const stock = await Stock.findOne({ _id: productId });
+
+      for (const field of requiredFields) {
+        if (!items.every((item: any) => item[field])) {
+          return res.status(400).json({ msg: `${field} must be selected for each item` });
+        }
+      }
+    
+
+      //remove this later
+      console.log('i am stock', stock)
 
       if (!stock?._id) {
-        return res.status(404).json({ msg: `Product with ID ${item.id} not found` });
+
+        //remove this later
+        console.log(`stock with id ${stock?._id} not found`)
+
+        return res.status(404).json({ msg: `Product with ID ${productId} not found` });
       }
 
       if (stock?.outofstock === true) {
