@@ -202,7 +202,7 @@ export const DeleteStockById = async (req: Request, res: Response) => {
 };
 
 export const AddToCart = async (req: Request, res: Response) => {
- let user = (req.user as IUser);
+ let user = req.user as IUser;
 
  const productId = req.params.id;
  //remove this later
@@ -227,7 +227,7 @@ export const AddToCart = async (req: Request, res: Response) => {
       return res.status(401).json({ msg: 'User not authenticated' });
     }
 
-    let cart: { id: string; quantity: number; size?: string; color?: string, price: number }[] = []
+    let cart: { id: string; quantity: number; size: any; color: any, price: number }[] = []
 
     for (const item of items) {
       const stock = await Stock.findOne({ _id: productId });
@@ -262,13 +262,6 @@ export const AddToCart = async (req: Request, res: Response) => {
         color: item.color,
       });
     };
-
-    // let totalCartPrice = 0;
-
-    // for (const item of cart) {
-    //   totalCartPrice += item.price * item.quantity;
-    // }
-
 
     if (!cart || cart.length === 0) {
       return res.status(405).json({ msg: "Your cart is empty" });
