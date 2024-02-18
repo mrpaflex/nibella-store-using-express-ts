@@ -435,6 +435,27 @@ export const VerifyPayment = async (req: Request, res: Response) => {
         if (responseData.status) {
        const amount=  responseData.data.amount / 100;
 
+      const refId = await Transaction.findOne({
+        txnReferenceId: referId
+      }).lean();
+
+
+      if (refId?._id) {
+        try {
+          console.log('updating transaction status')
+          await Transaction.findByIdAndUpdate(
+            refId._id,
+            {transactionStatus: responseData.data.status},
+            {new: true, runValidators: true}
+          )
+    
+          return res.status(200).json({msg: `transaction status updated ${responseData.data.status}`})
+        } catch (error) {
+          console.log(error)
+         return res.status(500).json({msg: "error updating transactions status failed"})
+        }
+      }
+
        await Transaction.create({
         userId: user._id,
         amount: amount,
