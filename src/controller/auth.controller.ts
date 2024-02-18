@@ -61,7 +61,7 @@ export const SignUp = async (req: Request, res: Response) => {
         telephone: telephone,
         address: address,
       });
-  
+  console.log(`you have sign up sucessfully ${createUser.userName}`)
       return res.status(201).json({ 
         Respone: `you have successfully sign up ${createUser.fullName}`
        });
@@ -72,7 +72,7 @@ export const SignUp = async (req: Request, res: Response) => {
 
 export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
    
-    passport.authenticate('local', async (err: any, user: Express.User, done: any) => {
+    passport.authenticate('local', async (err: any, user: IUser, done: any) => {
       try {
         if (err) {
           return res.status(400).json({ msg: err });
@@ -89,6 +89,9 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
           if (err) {
             next(err)
           }
+          
+          console.log(`you just log in  ${user?.userName}`);
+
        return res.status(200).json({ msg: `logged in successfully` });
         });
       } catch (error) {
