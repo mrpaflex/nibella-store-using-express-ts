@@ -32,7 +32,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { 
-      secure: true,
+      //secure: true,
       maxAge: 1* 60 * 60 * 1000 //15 minutes for production
       // maxAge: 15* 60 * 1000 //15 minutes for production
      },
