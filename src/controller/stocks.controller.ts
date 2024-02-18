@@ -216,7 +216,9 @@ export const AddToCart = async (req: Request, res: Response) => {
     cart?: { id: string; quantity: number; size?: string; color?: string}[];
   }
 
-  const { items }: { items: { quantity: number; size?: string; color?: string} [] } = req.body;
+   const { items }: { items: { quantity: number; size?: string; color?: string} [] } = req.body;
+
+ // const { quantity, size, color} = req.body;
 
   const requiredFields = ['size', 'color'];
 
@@ -263,6 +265,43 @@ export const AddToCart = async (req: Request, res: Response) => {
         color: item.color,
       });
     };
+
+  
+
+
+    //for (const item of items) {
+    //   const stock = await Stock.findOne({ _id: productId });
+      
+    // for (const field of requiredFields) {
+    //   if (!req.body[field]) {
+    //     return res.status(400).json({ msg: `${field} must be selected for each item` });
+    //   }
+    // }
+  
+
+    // //remove this later
+    // console.log('i am stock', stock)
+
+    // if (!stock?._id) {
+
+    //   //remove this later
+    //   console.log(`stock with id ${stock?._id} not found`)
+
+    //   return res.status(404).json({ msg: `Product with ID ${productId} not found` });
+    // }
+
+    // if (stock?.outofstock === true) {
+    //   return res.status(404).json({ msg: `Selected product ${stock._id} out of stock` });
+    // }
+
+    // cart.push({
+    //   id: stock._id.toString(),
+    //   price: stock.price,
+    //   quantity: quantity || 1,
+    //   size: size,
+    //   color: color,
+    // });
+  //};
 
     if (!cart || cart.length === 0) {
       return res.status(405).json({ msg: "Your cart is empty" });
