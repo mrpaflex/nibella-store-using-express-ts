@@ -1,5 +1,6 @@
 import {Request, Response } from "express";
 import {Stock} from '../model/Stock.model';
+import {ITransaction, Transaction} from '../model/Transaction.model'
 import  { Session } from 'express-session';
 import {cloudinary} from '../common/cloudinary/cloudinary.config';
 import { IUser } from "../model/User.model";
@@ -278,6 +279,7 @@ export const AddToCart = async (req: Request, res: Response) => {
 
 
 export const CheckoutOrder = async (req: Request, res: Response)=>{
+
  let user = (req.user as IUser);
 
   interface CustomSession extends Session {
@@ -334,7 +336,7 @@ export const StocksPayment = async (req: Request, res: Response)=>{
      if (!user) {
        return res.status(401).json({ msg: 'User not authenticated' });
      }
-     if (!cartItems.passport) {
+     if (!cartItems.passport || !cartItems.cart) {
        return res.status(403).json({msg: "can not proceed"})
      }
  
@@ -354,8 +356,10 @@ export const StocksPayment = async (req: Request, res: Response)=>{
  
  const params = JSON.stringify({
    "email": user.email,
-   "amount": totalCartPrice * 100
+   "amount": totalCartPrice * 100,
+   "stock": cartItems.cart
  })
+
  
  const options = {
    hostname: 'api.paystack.co',
@@ -370,29 +374,40 @@ export const StocksPayment = async (req: Request, res: Response)=>{
  
  const reqParam = https.request(options, reqParam => {
    let data= '';
- 
+
    reqParam.on('data', (chunk) => {
      data += chunk
    });
  
-   reqParam.on('end', () => {
-     res.status(200).json({msg: data})
-     console.log(data)
+  reqParam.on('end', () => {
+    
+    console.log(data)
+
+     res.status(200).json({data})
+     
    })
+
  }).on('error', error => {
-   console.error(error)
+   console.error('error', error)
  })
  
  reqParam.write(params)
  reqParam.end()
- 
+
+
    } catch (error) {
-     
+     console.log(error);
+     res.status(500).json({msg: "server error occur"})
    }
+   
+
  };
 
 
+//this endpoint will automatically run when the payment is made from the frontend
 export const VerifyPayment = async (req: Request, res: Response) => {
+  const user = req.user as IUser
+
   const referId = req.params.referenceId;
 
   const options = {
@@ -413,22 +428,37 @@ export const VerifyPayment = async (req: Request, res: Response) => {
       data += chunk;
     });
 
-    resParam.on('end', () => {
+    resParam.on('end', async () => {
       try {
         const responseData = JSON.parse(data);
 
         if (responseData.status) {
-          //define entities to save in db here.like
-          //amount, reference, user_email, user_fullName, transactiion_status,
-          //product purchase id and so on depending on what you need
        const amount=  responseData.data.amount / 100;
 
-         console.log(responseData)
-          res.status(200).json({ msg: responseData });
+       await Transaction.create({
+        userId: user._id,
+        amount: amount,
+        //stockId: '',
+        channel: responseData.data.channel,
+        currency: responseData.data.currency,
+        txnReferenceId: responseData.data.reference,
+        transactionStatus: responseData.data.status,
+        transaction_created_at: responseData.data.created_at,
+        paidAt: responseData.data.paidAt,
+        customerEmail: responseData.data.customer.email,
+        customer_name: user.fullName
+
+       })
+
+
+         //console.log(responseData);
+
+          res.status(200).json(responseData );
         } else {
           res.status(400).json({ msg: 'Payment verification failed', details: responseData.message });
         }
       } catch (error) {
+        console.log(error)
         res.status(500).json({ msg: 'Internal server error', error });
       }
     });
