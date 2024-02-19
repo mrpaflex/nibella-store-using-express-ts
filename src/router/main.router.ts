@@ -57,7 +57,7 @@ main_router.put('/user/editProfile/:id', ensureAuth, EditProfile);
 
 main_router.get('/user/delete/:username', DeleteUser );
 
-main_router.post('/user/addToCart/:id',ensureAuth, AddToCart);
+main_router.post('/user/addToCart/:id', AddToCart);
 
 main_router.get('/confirmed/orderPage', ensureAuth, CheckoutOrder);
 main_router.post('/stock/payment', ensureAuth, StocksPayment);
