@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import { connectDB } from './configdb/db';
 import MongoStore from 'connect-mongo';
 import {main_router} from './router/main.router';
@@ -9,15 +9,12 @@ import cors from 'cors';
 import * as dotenv from "dotenv";
 dotenv.config()
 
-
 const app= express();
 
-PassportStrategy(passport)
-
-
-connectDB();
-
 app.use(cors())
+
+PassportStrategy(passport)
+connectDB();
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -32,11 +29,6 @@ app.use(session({
     secret: token,
     resave: false,
     saveUninitialized: false,
-    cookie: { 
-      //secure: false,
-      maxAge: 1* 60 * 60 * 1000 //15 minutes for production
-      // maxAge: 15* 60 * 1000 //15 minutes for production
-     },
     store: MongoStore.create({mongoUrl: process.env.MONGO_URI}),
   }));
 
