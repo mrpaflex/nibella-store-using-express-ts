@@ -101,7 +101,7 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
   };
 
 
-  export const FindOneUser = async (req: Request, res: Response)=>{
+export const FindOneUser = async (req: Request, res: Response)=>{
     try {
     const userId = req.params.id
     const seletedfileld = "fullName userName telephone email"
@@ -116,7 +116,7 @@ export const LogInUser = (req: Request, res: Response, next: NextFunction) => {
     }
   };
 
-  export const FindAllUser = async (req: Request, res: Response)=>{
+export const FindAllUser = async (req: Request, res: Response)=>{
     try {
       const seletedfileld = "fullName userName telephone email"
     const user = await User.find().select(seletedfileld).lean();
