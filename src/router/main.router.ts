@@ -21,8 +21,8 @@ main_router.get('/user/findOne/:id', ensureAuth, restrict([UserType.ADMIN, UserT
 //main_router.get('/user/findAll', ensureAuth, restrict([UserType.ADMIN]), FindAllUser );
 main_router.get('/user/findAll', FindAllUser );
 
-///main_router.post('/upload/stock', multerUpload.single('file'), UploadStock);
-main_router.post('/upload/stock', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), multerUpload.single('file'), UploadStock);
+main_router.post('/upload/stock', multerUpload.single('file'), UploadStock);
+// main_router.post('/upload/stock', ensureAuth, restrict([UserType.ADMIN, UserType.CUSTOMER]), multerUpload.single('file'), UploadStock);
 
 
 
