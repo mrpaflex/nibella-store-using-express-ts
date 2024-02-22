@@ -28,11 +28,12 @@ if (!token) {
 app.use(session({
     secret: token,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
       secure: true,
       maxAge: 1*60*60*60
     },
+    //will be removed on production
     store: MongoStore.create({mongoUrl: process.env.MONGO_URI}),
   }));
 
