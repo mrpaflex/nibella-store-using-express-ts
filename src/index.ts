@@ -3,7 +3,8 @@ import { connectDB } from './configdb/db';
 import MongoStore from 'connect-mongo';
 import {main_router} from './router/main.router';
 import passport from 'passport';
-const cookieParser = require('cookie-parser');
+import cookieParser from 'cookie-parser';
+//const cookieParser = require('cookie-parser');
 import session from 'express-session';
 import {PassportStrategy} from './strategy/passport.local.strategy';
 
@@ -28,7 +29,8 @@ if (!token) {
   throw new Error('SECRET_TOKEN is not defined in the environment variables');
 }
 
-app.use(cookieParser())
+app.use(cookieParser());
+//app.use(cookieParser())
 
 app.use(session({
     secret: token,
