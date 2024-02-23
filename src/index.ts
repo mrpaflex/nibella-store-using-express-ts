@@ -30,7 +30,7 @@ if (!token) {
 
 app.use(session({
     secret: token,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: {
       //secure: true,
