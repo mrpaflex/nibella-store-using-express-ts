@@ -30,7 +30,7 @@ if (!token) {
 
 app.use(session({
     secret: token,
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     cookie: {
       //secure: true,
@@ -38,7 +38,7 @@ app.use(session({
       sameSite: 'none'
     },
     //will be removed on production
-    //store: MongoStore.create({mongoUrl: process.env.MONGO_URI}),
+    store: MongoStore.create({mongoUrl: process.env.MONGO_URI}),
   }));
 
 app.use(passport.initialize());
